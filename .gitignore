@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
+.env/
+.envrc
+venv/
+.venv/
+env/
+media/
+
+
+# IDE
+.idea/
+.vscode/
+
+# Test/ALembic
+src/tests/__pycache__/
