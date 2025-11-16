@@ -5,7 +5,12 @@ from .models import MenuItem
 
 
 @receiver([post_save, post_delete], sender=MenuItem)
-def clear_menu_cache(sender, **kwargs):
-    instance = kwargs['instance']
-    cache_key = f"menu_items_{instance.menu_name}"
-    cache.delete(cache_key)
+  try:
+        instance = kwargs.get('instance')
+        if not instance or not hasattr(instance, 'menu_name'):
+            return
+        cache_key = f"menu_items_{instance.menu_name}"
+        cache.delete(cache_key)
+        
+    except Exception as e:
+        ...
