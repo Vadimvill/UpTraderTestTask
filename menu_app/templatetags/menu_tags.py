@@ -52,8 +52,11 @@ def convert_queryset_to_dict(menu_items):
 
 
 def find_active_item(items_dict, current_url):
+    current_url = current_url.rstrip('/')
+
     for item_data in items_dict.values():
-        if item_data['url'] == current_url:
+        item_url = item_data['url'].rstrip('/')
+        if item_url == current_url:
             item_data['is_active'] = True
             return item_data
     return None
