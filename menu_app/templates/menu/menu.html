@@ -1,0 +1,7 @@
+<nav class="menu menu-{{ menu_name }}">
+    <ul class="menu-root">
+        {% for item in menu_tree %}
+            {% include "menu/menu_item.html" with item=item %}
+        {% endfor %}
+    </ul>
+</nav>

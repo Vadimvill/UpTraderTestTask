@@ -1,17 +1,29 @@
 from django import template
+from django.core.cache import cache
 from ..models import MenuItem
 
 register = template.Library()
 
 
-@register.inclusion_tag('menu_app/menu.html', takes_context=True)
+def get_menu_items(menu_name):
+    cache_key = f"menu_items_{menu_name}"
+    menu_items = cache.get(cache_key)
+
+    if menu_items is None:
+        menu_items = list(MenuItem.objects.filter(
+            menu_name=menu_name
+        ).select_related('parent'))
+        cache.set(cache_key, menu_items, 60 * 60)
+
+    return menu_items
+
+
+@register.inclusion_tag('menu/menu.html', takes_context=True)
 def draw_menu(context, menu_name):
     request = context['request']
     current_url = request.path
 
-    menu_items = MenuItem.objects.filter(
-        menu_name=menu_name
-    ).select_related('parent')
+    menu_items = get_menu_items(menu_name)
     items_dict = convert_queryset_to_dict(menu_items)
     active_item = find_active_item(items_dict, current_url)
     menu_tree = build_tree_structure(items_dict)
